@@ -58,7 +58,7 @@ namespace WordsGame2
             }
         }
 
-        static void Round(Players[] players,Players player, bool lastRound = false)
+        static void Round(List<Players> players,Players player, bool lastRound = false)
         {
             Console.Clear();
             Settings.Timer.Start();
@@ -107,7 +107,7 @@ namespace WordsGame2
             }
         }
 
-        public static void StartGame(Players[] players)
+        public static void StartGame(List<Players> players)
         {
             gameEnd = false;
             BaseWordInput();
@@ -115,7 +115,7 @@ namespace WordsGame2
             while (players[0].IsAlive || players[1].IsAlive)
             {
                 SwitchPlayers(players, ref player);
-                if (players[0].TriesCount != players[1].TriesCount)
+                if (gameEnd && players[0].TriesCount != players[1].TriesCount)
                     if (players[0].TriesCount > players[1].TriesCount)
                         Round(players, players[1], true);
                     else
@@ -126,7 +126,7 @@ namespace WordsGame2
             Console.ReadKey();
         }
 
-        static void SwitchPlayers(Players[] players, ref Players player)
+        static void SwitchPlayers(List<Players> players, ref Players player)
         {
             if (player == players[1])
             {
@@ -157,16 +157,16 @@ namespace WordsGame2
                 StopRound();
         }
 
-        private static void StopRound(/*Players player*/)
+        private static void StopRound()
         {
             gameEnd = true;
             Settings.Timer.Stop();
             Settings.TimeLeft = Settings.RoundDuration;
             Console.Clear();
-            Console.WriteLine("Время истекло." + '\n' + "Нажмите любую Ввод для продолжения.");
+            Console.WriteLine("Время истекло." + '\n' + "Нажмите 'Ввод' для продолжения.");
         }
 
-        private static void ShowResults(Players[] players)
+        private static void ShowResults(List<Players> players)
         {
             Console.Clear();
             foreach (var player in players)

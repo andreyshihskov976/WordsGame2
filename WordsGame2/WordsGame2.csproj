@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ExceptionsMessages.cs" />
     <Compile Include="GameMechanic.cs" />
+    <Compile Include="JsonSerialization.cs" />
     <Compile Include="Parsing.cs" />
     <Compile Include="Players.cs" />
     <Compile Include="Program.cs" />

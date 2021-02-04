@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace WordsGame2
 {
@@ -31,7 +32,7 @@ namespace WordsGame2
                             //Console.WriteLine("Введите имя первого пользователя:");
                             Players player1 = new Players("Игрок 1");
                             Players player2 = new Players("Игрок 2");
-                            Players[] players = new Players[] { player1, player2 };
+                            List<Players> players = new List<Players> { player1, player2 };
                             //создание пользователей
                             GameMechanic.StartGame(players);
                             break;

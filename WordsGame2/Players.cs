@@ -7,7 +7,7 @@ using System.Timers;
 
 namespace WordsGame2
 {
-    class Players
+    public class Players
     {
         string playerName;
         bool isAlive;
