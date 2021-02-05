@@ -18,7 +18,11 @@ namespace WordsGame2
             }
             else
             {
-                ExceptionsMessages.ShowExceptionMessage(ExceptionsMessages.ExceptionMessage["ParseIntException"]);
+                Console.Clear();
+                Console.Beep();
+                Console.WriteLine("Ошибка: 'Вводимое значение должно быть целым числом.'" + '\n' +
+                                        "Нажмите любую клавишу для продолжения и повторите ввод.");
+                Console.ReadKey();
                 outputInt = 0;
                 return false;
             }

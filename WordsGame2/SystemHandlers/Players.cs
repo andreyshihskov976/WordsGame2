@@ -9,20 +9,26 @@ namespace WordsGame2
 {
     public class Players
     {
+        private Guid id;
         string playerName;
         bool isAlive;
-        List<string> countedWords = new List<string>();
-        int triesCount;
+        List<string> scoredWords = new List<string>();
+        int amountRounds;
+        int totalScore;
 
         public Players(string playerName)
         {
+            id = Guid.NewGuid();
             this.playerName = playerName;
             isAlive = true;
+            this.totalScore = 0;
         }
 
-        public List<string> CountedWords { get => countedWords; set => countedWords = value; }
+        public List<string> ScoredWords { get => scoredWords; set => scoredWords = value; }
         public bool IsAlive { get => isAlive; set => isAlive = value; }
         public string PlayerName { get => playerName; set => playerName = value; }
-        public int TriesCount { get => triesCount; set => triesCount = value; }
+        public int AmountRounds { get => amountRounds; set => amountRounds = value; }
+        public int TotalScore { get => totalScore; set => totalScore = value; }
+        public Guid Id { get => id; set => id = value; }
     }
 }

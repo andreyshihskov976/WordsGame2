@@ -46,14 +46,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExceptionsMessages.cs" />
-    <Compile Include="GameMechanic.cs" />
-    <Compile Include="JsonSerialization.cs" />
-    <Compile Include="Parsing.cs" />
-    <Compile Include="Players.cs" />
+    <Compile Include="Interfaces\ICustomSettings.cs" />
+    <Compile Include="Interfaces\IDefaultSettings.cs" />
+    <Compile Include="Interfaces\IGame.cs" />
+    <Compile Include="Interfaces\IGameMechanics.cs" />
+    <Compile Include="Interfaces\IMenu.cs" />
+    <Compile Include="Interfaces\IMultiplayer.cs" />
+    <Compile Include="Interfaces\ISerializable.cs" />
+    <Compile Include="Interfaces\ITimer.cs" />
+    <Compile Include="SystemHandlers\StorageService.cs" />
+    <Compile Include="Trash\ExceptionMessage.cs" />
+    <Compile Include="GameHandlers\GameMechanic.cs" />
+    <Compile Include="GameHandlers\MainHandler.cs" />
+    <Compile Include="Other\InfoCommand.cs" />
+    <Compile Include="Other\JsonSerialization.cs" />
+    <Compile Include="GameHandlers\TimerHandler.cs" />
+    <Compile Include="Other\Parsing.cs" />
+    <Compile Include="SystemHandlers\Players.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="SystemHandlers\Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

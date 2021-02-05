@@ -6,17 +6,20 @@ using System.Threading.Tasks;
 
 namespace WordsGame2
 {
-    static class ExceptionsMessages
+    public class ExceptionMessage
     {
-        public static Dictionary<string, string> ExceptionMessage = new Dictionary<string, string>()
+        public static Dictionary<string, string> ExceptionMessages;
+
+        public ExceptionMessage(Settings getSettings)
         {
+            ExceptionMessages = new Dictionary<string, string>(){
             {"EmptyBaseWordException","Ошибка: Вы ввели пустую строку." + '\n' +
-                "Минимальная длина слова должна составлять: " + Settings.MinLength.ToString() + '\n' +
-                "Максимальная длина слова должна составлять: " + Settings.MaxLength.ToString() + '\n' +
+                "Минимальная длина слова должна составлять: " + getSettings.MinLength.ToString() + '\n' +
+                "Максимальная длина слова должна составлять: " + getSettings.MaxLength.ToString() + '\n' +
                 "Нажмите любую клавишу для продолжения и повторите ввод."},
             { "BaseWordLengthException", "Слово не подходит по правилам." + '\n' +
-                "Минимальная длина слова должна составлять: " + Settings.MinLength.ToString() + '\n' +
-                "Максимальная длина слова должна составлять: " + Settings.MaxLength.ToString() + '\n' +
+                "Минимальная длина слова должна составлять: " + getSettings.MinLength.ToString() + '\n' +
+                "Максимальная длина слова должна составлять: " + getSettings.MaxLength.ToString() + '\n' +
                 "Нажмите любую клавишу для продолжения и повторите ввод."},
             { "CheckBaseWordException", "Ошибка: Базовое слово не может содержать цифры и прочие знаки, кроме букв." + '\n' +
                 "Нажмите любую клавишу для продолжения и повторите ввод."},
@@ -24,9 +27,10 @@ namespace WordsGame2
                                     "Нажмите любую клавишу для продолжения и повторите ввод."},
             { "OutOfMenuException","Ошибка: 'Такого пункта не существует в меню.'" + '\n' +
                                     "Нажмите любую клавишу для продолжения и повторите ввод."}
-        };
+            };
+        }
 
-        public static void ShowExceptionMessage(string message)
+        public virtual void ShowExceptionMessage(string message)
         {
             Console.Clear();
             Console.Beep();
