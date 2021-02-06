@@ -7,22 +7,23 @@ using WordsGame2.Other;
 
 namespace WordsGame2
 {
-    public class GameMechanic: IGameMechanics
+    public class GameMechanic: IMechanics, IRoundUI
     {
         private Settings _getSettings;
-        private InfoCommand _getInfoCommand;
+        private GameInformation _getInfoCommand;
         public string baseWord;
+        public bool isGameExit;
         static Dictionary<char, int> baseWordDictionary;
         static string inputedWord;
 
-        public GameMechanic(Settings getSettings, InfoCommand getInfoCommand)
+        public GameMechanic(Settings getSettings, GameInformation getInfoCommand)
         {
             _getSettings = getSettings;
             _getInfoCommand = getInfoCommand;
         }
 
         public Settings GetSettings { get => _getSettings; set => _getSettings = value; }
-        public InfoCommand GetInfoCommand { get => _getInfoCommand; set => _getInfoCommand = value; }
+        public GameInformation GetGameInformation { get => _getInfoCommand; set => _getInfoCommand = value; }
 
         public virtual void BaseWordInput()
         {
@@ -83,70 +84,77 @@ namespace WordsGame2
             }
         }
 
-        public virtual void RoundHandler(List<Players> players, Players player, bool lastRound = false)
+        public virtual void RoundHandler(List<Players> players, Players activePlayer, bool isLastRound = false)
         {
             GetSettings.TimerHandler.Timer.Start();
-            player.AmountRounds++;
-            RoundUI();
+            activePlayer.AmountRounds++;
+            RoundUI(activePlayer, isLastRound);
             if (GetSettings.TimerHandler.OutOfTime)
-                player.IsAlive = false;
-            if (player.IsAlive || lastRound)
-            {
-                if (GetInfoCommand.ShowInfo(inputedWord, players, GetSettings.TimerHandler.Timer, baseWord))
-                {
-                    RoundUI();
-                    CountInputedWord(players, player, lastRound);
-                }
-                else
-                    CountInputedWord(players, player, lastRound);
-            }
+                activePlayer.IsAlive = false;
+            if (activePlayer.IsAlive || isLastRound)
+                HandleInputedWord(players, activePlayer);
         }
 
-        public void RoundUI()
+        public virtual void RoundUI(Players activePlayer, bool isLastRound)
         {
             Console.Clear();
-            Console.WriteLine('\n' + "Основное слово: {0}" + '\n' + "Для получения информации по игре введите следующие команды: ", baseWord);
-            foreach (var command in GetInfoCommand.Commands)
+            if (isLastRound) Console.WriteLine('\n' + "Последний раунд!" + '\n' + "{0}, Ваш ход." + '\n' + "Основное слово: {1}" + '\n' + "Для получения информации по игре введите следующие команды: ", activePlayer.PlayerName, baseWord);
+            else Console.WriteLine('\n' +"{0}, Ваш ход." + '\n' + "Основное слово: {1}" + '\n' + "Для получения информации по игре введите следующие команды: ", activePlayer.PlayerName, baseWord);
+            foreach (var command in GetGameInformation.Commands)
                 Console.WriteLine(command);
             Console.WriteLine("Введите полученное Вами слово:");
             inputedWord = Console.ReadLine();
         }
 
-        public virtual void CountInputedWord(List<Players> players, Players player, bool lastRound)
+        public virtual void HandleInputedWord(List<Players> players, Players activePlayer)
         {
             int lettersCount = 0;
             if (inputedWord.Length > 0)
             {
-                foreach (var c in inputedWord.ToUpper().Distinct())
+                if (inputedWord == "/exit")
                 {
-                    if (baseWordDictionary.ContainsKey(c))
-                        if (inputedWord.ToUpper().Count(letter => letter == c) <= baseWordDictionary[c])
-                            lettersCount++;
+                    GetSettings.TimerHandler.Timer.Stop();
+                    GetSettings.TimerHandler.TimeLeft = GetSettings.RoundDuration;
+                    isGameExit = true;
+                    foreach (var player in players)
+                        player.IsAlive = false;
+                    return;
                 }
-                if (lettersCount == inputedWord.Distinct().Count())
+                if (!GetGameInformation.Commands.Contains(inputedWord))
                 {
-                    if (!players[0].ScoredWords.Any(item => item == inputedWord) && !players[1].ScoredWords.Any(item => item == inputedWord))
+                    foreach (var c in inputedWord.ToUpper().Distinct())
                     {
-                        player.ScoredWords.Add(inputedWord);
-                        Console.WriteLine("Слово засчитано.");
-                        GetSettings.TimerHandler.Timer.Stop();
-                        GetSettings.TimerHandler.TimeLeft = GetSettings.RoundDuration;
-                        Console.ReadKey();
-                        return;
+                        if (baseWordDictionary.ContainsKey(c))
+                            if (inputedWord.ToUpper().Count(letter => letter == c) <= baseWordDictionary[c])
+                                lettersCount++;
+                    }
+                    if (lettersCount == inputedWord.Distinct().Count())
+                    {
+                        if (!players.Any(player => player.ScoredWords.Any(item => item == inputedWord)))
+                        {
+                            activePlayer.ScoredWords.Add(inputedWord);
+                            Console.WriteLine("Слово засчитано.");
+                            GetSettings.TimerHandler.Timer.Stop();
+                            GetSettings.TimerHandler.TimeLeft = GetSettings.RoundDuration;
+                            Console.ReadKey();
+                            return;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Такое слово уже было.");
+                            Console.ReadKey();
+                            return;
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("Такое слово уже было.");
+                        Console.WriteLine("Слово не засчитано.");
                         Console.ReadKey();
                         return;
                     }
                 }
                 else
-                {
-                    Console.WriteLine("Слово не засчитано.");
-                    Console.ReadKey();
-                    return;
-                }
+                    GetGameInformation.ShowInfo(inputedWord);
             }
         }
 

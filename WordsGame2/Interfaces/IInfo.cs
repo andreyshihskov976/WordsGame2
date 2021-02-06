@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace WordsGame2.Interfaces
 {
-    interface IMultiplayer
+    interface IInfo
     {
-        void NextPlayerTurn(List<Players> players, ref bool firstPlayerNext);
-        void NewPlayer();
-        void ChoosePlayers();
+        bool ShowInfo(string inputedCommand);
     }
 }

@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace WordsGame2.Interfaces
 {
-    interface IMultiplayer
+    interface IRoundUI
     {
-        void NextPlayerTurn(List<Players> players, ref bool firstPlayerNext);
-        void NewPlayer();
-        void ChoosePlayers();
+        void RoundUI(Players player, bool isLastRound);
     }
 }

@@ -49,16 +49,19 @@
     <Compile Include="Interfaces\ICustomSettings.cs" />
     <Compile Include="Interfaces\IDefaultSettings.cs" />
     <Compile Include="Interfaces\IGame.cs" />
-    <Compile Include="Interfaces\IGameMechanics.cs" />
+    <Compile Include="Interfaces\IInfo.cs" />
+    <Compile Include="Interfaces\IMechanics.cs" />
     <Compile Include="Interfaces\IMenu.cs" />
     <Compile Include="Interfaces\IMultiplayer.cs" />
+    <Compile Include="Interfaces\IPlayersInfo.cs" />
+    <Compile Include="Interfaces\IRoundUI.cs" />
     <Compile Include="Interfaces\ISerializable.cs" />
     <Compile Include="Interfaces\ITimer.cs" />
     <Compile Include="SystemHandlers\StorageService.cs" />
     <Compile Include="Trash\ExceptionMessage.cs" />
     <Compile Include="GameHandlers\GameMechanic.cs" />
     <Compile Include="GameHandlers\MainHandler.cs" />
-    <Compile Include="Other\InfoCommand.cs" />
+    <Compile Include="Other\GameInformation.cs" />
     <Compile Include="Other\JsonSerialization.cs" />
     <Compile Include="GameHandlers\TimerHandler.cs" />
     <Compile Include="Other\Parsing.cs" />
@@ -70,6 +73,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Saves\players.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

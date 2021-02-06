@@ -10,26 +10,23 @@ namespace WordsGame2.GameHandlers
     {
         private Settings _settings;
         private GameMechanic _gameMechanic;
-        private InfoCommand _infoCommand;
-        private JsonSerialization _jsonSerialization;
+        private GameInformation _infoCommand;
         private StorageService _storageService;
         private List<Players> _allPlayers;
         private List<Players> _chosenPlayers;
 
         public MainHandler()
         {
-            _settings = new Settings();
-            _infoCommand = new InfoCommand();
-            _jsonSerialization = new JsonSerialization();
-            _storageService = new StorageService();
-            _gameMechanic = new GameMechanic(_settings, _infoCommand);
-            _allPlayers = StorageService.DeserializePlayers($@"D:\Учеба\IBA\WordsGame2\WordsGame2\bin\Debug\Saves\players.json");
+            Settings = new Settings();
+            StorageService = new StorageService();
+            AllPlayers = StorageService.DeserializePlayers(Settings.SavesPath);
+            InfoCommand = new GameInformation(StorageService,Settings,AllPlayers);
+            GameMechanic = new GameMechanic(Settings, InfoCommand);
         }
 
         public Settings Settings { get => _settings; set => _settings = value; }
-        public InfoCommand InfoCommand { get => _infoCommand; set => _infoCommand = value; }
+        public GameInformation InfoCommand { get => _infoCommand; set => _infoCommand = value; }
         public GameMechanic GameMechanic { get => _gameMechanic; set => _gameMechanic = value; }
-        public JsonSerialization JsonSerialization { get => _jsonSerialization; set => _jsonSerialization = value; }
         public StorageService StorageService { get => _storageService; set => _storageService = value; }
         public List<Players> ChosenPlayers { get => _chosenPlayers; set => _chosenPlayers = value; }
         public List<Players> AllPlayers { get => _allPlayers; set => _allPlayers = value; }
@@ -72,10 +69,12 @@ namespace WordsGame2.GameHandlers
             }
         }
 
-        public virtual void ChoicePlayers()
+        public virtual void ChoosePlayers()
         {
             ChosenPlayers = new List<Players>();
             while (ChosenPlayers.Count < 2)
+            {
+                Console.Clear();
                 if (AllPlayers.Count > 0)
                 {
                     Console.WriteLine("Игрок №{0}, выберите вашу запись игрока или добавьте новую." + '\n' + "Список записей:", ChosenPlayers.Count + 1);
@@ -99,7 +98,12 @@ namespace WordsGame2.GameHandlers
                             NewPlayer();
                 }
                 else
+                {
+                    Console.WriteLine("Ниодной записи игрока не было найдено.");
                     NewPlayer();
+                }
+            }
+                    
         }
 
         public virtual void NewPlayer()
@@ -120,10 +124,12 @@ namespace WordsGame2.GameHandlers
 
         public virtual void InitializeGame()
         {
-            ChoicePlayers();
+            ChoosePlayers();
             GameMechanic.BaseWordInput();
+            InfoCommand.ChosenPlayers = ChosenPlayers;
+            InfoCommand.baseWord = GameMechanic.baseWord;
             StartSession(ChosenPlayers);
-            StorageService.SerializePlayers(AllPlayers, $@"D:\Учеба\IBA\WordsGame2\WordsGame2\bin\Debug\Saves\players.json");
+            StorageService.SerializePlayers(AllPlayers, Settings.SavesPath);
             Console.WriteLine("Нажмите любую клавишу для перехода в меню.");
             Console.ReadKey();
         }
@@ -131,6 +137,7 @@ namespace WordsGame2.GameHandlers
 
         public virtual void StartSession(List<Players> players)
         {
+            Settings.TimerHandler.OutOfTime = false;
             foreach (var player in players)
             {
                 player.IsAlive = true;
@@ -142,16 +149,17 @@ namespace WordsGame2.GameHandlers
                 NextPlayerTurn(players, ref firstPlayerNext);
             FinalTurn(players);
             Console.Clear();
-            InfoCommand.ShowSessionResults(players, GameMechanic.baseWord);
+            InfoCommand.ShowGameInfo(players, GameMechanic.baseWord);
         }
 
         public virtual void FinalTurn(List<Players> players)
         {
-            if (players[0].AmountRounds != players[1].AmountRounds)
-                if (players[0].AmountRounds > players[1].AmountRounds)
-                    GameMechanic.RoundHandler(players, players[1], true);
-                else
-                    GameMechanic.RoundHandler(players, players[0], true);
+            if (!GameMechanic.isGameExit)
+                if (players[0].AmountRounds != players[1].AmountRounds)
+                    if (players[0].AmountRounds > players[1].AmountRounds)
+                        GameMechanic.RoundHandler(players, players[1], true);
+                    else
+                        GameMechanic.RoundHandler(players, players[0], true);
         }
 
         public virtual void NextPlayerTurn(List<Players> players, ref bool firstPlayerNext)

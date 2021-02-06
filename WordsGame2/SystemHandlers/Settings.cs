@@ -14,6 +14,7 @@ namespace WordsGame2
         const int defaultMinLength = 8;
         const int defaultMaxLength = 30;
         const int defaultRoundDuration = 5;
+        private readonly string savesPath = Environment.CurrentDirectory + $@"\Saves\players.json";
         private TimerHandler _timer;
         private int _minLength;
         private int _maxLength;
@@ -29,6 +30,7 @@ namespace WordsGame2
         public int MaxLength { get => _maxLength; set => _maxLength = value; }
         public int RoundDuration { get => _roundDuration; set => _roundDuration = value; }
         public TimerHandler TimerHandler { get => _timer; set => _timer = value; }
+        public string SavesPath => savesPath;
 
         enum SettingsMenuActions
         {
